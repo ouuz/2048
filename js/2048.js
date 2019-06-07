@@ -108,12 +108,38 @@ $(function() {
         }
     }
 
+    
+    function goingGameOver(){
+        NodeList.prototype.map=Array.prototype.map;
+        const eles = document.querySelectorAll('.ele').map(item => parseInt(item.innerText===""?0:item.innerText));
+        const getNeighbors = (raw,index) => {
+            const width = Math.sqrt(raw.length);
+            const neighbors=[];
+            const atTop = () => index<width;
+            const atBottom = () => raw.length > index && raw.length -width <= index;
+            const atLeft = () => index%width === 0;
+            const atRight = () => (index+1)%width === 0;
+            if(!atTop()) neighbors.push(raw[index-width]);
+            if(!atBottom()) neighbors.push(raw[index+width]);
+            if(!atLeft()) neighbors.push(raw[index-1]);
+            if(!atRight()) neighbors.push(raw[index+1]);
+            return neighbors; 
+        }
+        if(eles.some((item,index) => getNeighbors(eles,index).includes(item) )){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
     //判断游戏是否结束
     function ifGameOver() {
         let AllEle = $('.game .ele');
         let non = $('.game  .non');
 
-        if (non.length == AllEle.length) { //满格的话
+        // if (non.length == AllEle.length) { //满格的话
+        if (non.length == AllEle.length&&goingGameOver()) { //没办法再继续移动的话
 
             for (let i = 0; i < non.length; i++) {
 
